@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Problem Description
-* We want to do a sentiment analysis on the **World News subreddit** comments for the different post relating to recent news from all over the World
+* We want to do a sentiment analysis on the **World News subreddit** comments for the different posts relating to recent news from all over the World
 * It would be interesting to see how the Reddit community is reacting to recent news in light of some attention-seeking events that have happened recently.
 
 ## Data Collection and Transformation
@@ -28,7 +28,7 @@ reddit_thread <- reddit_content(reddit_links$URL)
 ```
 * Data retrieved as a data frame.
 * Initial data explorations shows no violation of any tidy rules.
-* Since we are dealing with text data, we will need to clean the text to remove stopwords, stemming, etc.
+* Since we are dealing with text data, we will need to clean and transform the text to remove stopwords, stemming, etc.
 
 ## Analytics Plan
 * Data exploration for comments based on posting times and number of comments in threads
