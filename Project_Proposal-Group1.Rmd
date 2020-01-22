@@ -1,80 +1,42 @@
 ---
-title: "Project Proposal"
-author: 
-  <small>
-   <ul style="list-style-type:none">
-    <li> Richard Moore </li>
-    <li> Quan Le </li>
-    <li> Anirudh Chaudhary </li>
-    <li> Hao Nguyen </li>
-    </ul>
-  </small>
+title: "Project Proposal - Reddit"
+author: "Anirudh Chaudhary, Quan Le, Richard More, Hao Nguyen"
+date: "January 22, 2020"
 output:
-  revealjs::revealjs_presentation:
-    theme: simple
-    highlight: haddock
-    center: true
-    transition: slide
-    reveal_options:
-      slideNumber: true
---- 
+  ioslides_presentation:
+    widescreen: true
+    logo: Reddit_logo_orange.svg #https://upload.wikimedia.org/wikipedia/commons/e/e5/Reddit_logo_orange.svg
+---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T)
-
-#install.packages("revealjs")
-#install.packages("RedditExtractoR")
-library(tidyverse)
-library(dplyr)
-library(RedditExtractoR)
-
-#Theme: “default”, “dark”, “simple”, “sky”, “beige”, “serif”, “solarized”, “blood”, “moon”, “night”, “black”, “league”, “white”
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Problem Description
-- We will use the data retrieving from <https://cran.r-project.org/web/packages/RedditExtractoR/>
-- There is no secondary data.
-- We want to develop a machine learning model to predict the upvote of a comment in each thread based on available features
-- It is very interesting to find and promote the most useful or concerned comment about a thread. Users won’t have to spend too much time reading junk comments and just spend time reading what is useful. This will help reddit be more attractive then Quora or any other forums website
+* We want to develop a machine learning model to predict the upvote of a comment in each thread based on available features
+* It is very interesting to find and promote the most useful or concerned comment about a thread. Users won’t have to spend too much time reading junk comments and just spend time reading what is useful. This will help reddit be more attractive then Quora or any other forums website
 
-## Data Collection
-- First, we will make sure R is in version 3.6.2 because RedditExtractoR is built to be used in that version
-- Then we will use the following code to retrieve a thread in reddit.
-```{r warning=FALSE, message=FALSE, results='hide'}
-reddit_links <- reddit_urls(
-  search_terms   = "cute_cats",
-  page_threshold = 1
-)
+## Data Collection and Transformation
+* We will use **RedditExtractoR**, **tidyverse**, and other relevant libraries; no secondary data source.
+* Data can be retrieved by supplying the search arguments like so:
+```{r echo=TRUE, eval=FALSE}
+reddit_content <- get_reddit(
+  subreddit = "Rlanguage",
+  search_terms = "ggplot",
+  page_threshold = 10)
 ```
-- After getting the the links, we can access each link comment by using the following
-```{r warning=FALSE, message=FALSE, results='hide'}
-reddit_thread <- reddit_content(reddit_links$URL[1])
-str(reddit_thread)
-```
-
-## Data Content 
-```{r warning=FALSE, message=FALSE}
-str(reddit_thread)
-```
-
-## Data Transformation
-<b>How will you clean and transform the data?</b>
-
-- First, we will load tidyverse and convert dataframe to tidyverse dataframe.
-- Then, we will make sure the dataframe following three tidy rules. If the dataframe violates any of the tidy rules, we will have to fix its violation.
+* Data retrieved as a data frame.
+* Initial data explorations does not seem to violate any tidy rules.
+* Since we are dealing with text data we will need to clean the text to remove stopwords.
 
 ## Analytics Plan: 
-- Perform some exploratory data analysis with GGPLOT2 to find any interesting pattern concerning up_voted
-- Convert the comment text to vectors, so we can perform an analysis on it.
-- Use stepwise feature extraction to make R decide what features we should use for the Machine Learning Model.
-- Use Linear Regression, Ridge and Lasso for this problem to find the relationship between features and up_voted
-- Use ggplot2, tidyverse, RedditExtractoR, Linear Regression, Ridge and Lasso
+* Perform some exploratory data analysis with GGPLOT2 to find any interesting pattern concerning up_voted
+* Convert the comment text to vectors, so we can perform an analysis on it.
+* Use stepwise feature extraction to make R decide what features we should use for the Machine Learning Model.
+* Use Linear Regression, Ridge and Lasso for this problem to find the relationship between features and up_voted
+* Use ggplot2, tidyverse, RedditExtractoR, Linear Regression, Ridge and Lasso
 
 ## Evaluation Plan: 
-- We will take a look at two things to evaluate the model, adjusted R square and RMSE 
-Qualitatively, what kind of results do you expect (e.g. plots, figures, tables, etc.)?
-- Quantitatively, we hope to achieve from 85% - 95% adjusted R square and  RMSE ~ 5% of mean
-- Additionally, we will perform some Ridge or Lasso Regression and compare the adjusted R square and RMSE. Then, we will choose the best model.
-
-# Thank You
-
-
+* To evaluate the model we will use the adjusted R<sup>2</sup>, and RMSE
+* Quantitatively, we hope to achieve from 85% - 95% adjusted R<sup>2</sup> and RMSE ~ 5% of mean
+* We will use **cross-validation** to ensure we use best parameters on best model with highest learning possible and importance selection using two way **Variable Selection**
