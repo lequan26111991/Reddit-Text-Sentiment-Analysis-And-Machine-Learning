@@ -3141,7 +3141,7 @@ slide:not(.current) .plotly.html-widget{
 
 <ul>
 <li>We want to do a sentiment analysis on the <strong>World News subreddit</strong></li>
-<li>It is very interesting because it gives an additional option of &ldquo;High Score Comments&rdquo; to Reddit’s sorting functionality. With our prediction model, we can also propose high score comments to place at the top of each thread which will save a significant amount of time for users to find useful comments. This will help Reddit be more attractive then Quora or any other forums.</li>
+<li>asd</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Data Collection and Transformation</h2></hgroup><article  id="data-collection-and-transformation">
@@ -3169,13 +3169,19 @@ reddit_thread &lt;- reddit_content(reddit_links$URL)</pre>
 <li>Data exploration for comments based on posting times and number of comments in threads</li>
 <li>Convert the comment texts to vectors, so we can perform a text analysis on them.</li>
 <li>N-grams, TF-IDF, Sentiment Analysis</li>
-<li>Use Sentiments Analysis to predict which bucket the comments should belong.</li>
+<li>Use Sentiments Analysis
+
+<ul>
+<li>Positive / Negative</li>
+<li>Emotion</li>
+<li>Numeric</li>
+</ul></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Evaluation Plan</h2></hgroup><article  id="evaluation-plan">
 
 <ul>
-<li>Wordcloud to get most frequent phrases</li>
+<li>Wordcloud to get most frequent phrases, sentiment analysis results</li>
 <li>Graphs, histograms for domains</li>
 <li>Sentiment score</li>
 </ul></article></slide>

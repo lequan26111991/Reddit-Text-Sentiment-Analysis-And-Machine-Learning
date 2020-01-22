@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Problem Description
 * We want to do a sentiment analysis on the **World News subreddit** 
-* It is very interesting because it gives an additional option of "High Score Comments" to Reddit's sorting functionality. With our prediction model, we can also propose high score comments to place at the top of each thread which will save a significant amount of time for users to find useful comments. This will help Reddit be more attractive then Quora or any other forums.
+* asd
 
 ## Data Collection and Transformation
 * We will use **RedditExtractoR**, **tidyverse**, and other relevant libraries; no secondary data source.
@@ -34,9 +34,12 @@ reddit_thread <- reddit_content(reddit_links$URL)
 * Data exploration for comments based on posting times and number of comments in threads
 * Convert the comment texts to vectors, so we can perform a text analysis on them.
 * N-grams, TF-IDF, Sentiment Analysis
-* Use Sentiments Analysis to predict which bucket the comments should belong.
+* Use Sentiments Analysis
+  * Positive / Negative
+  * Emotion
+  * Numeric
 
 ## Evaluation Plan
-* Wordcloud to get most frequent phrases
+* Wordcloud to get most frequent phrases, sentiment analysis results
 * Graphs, histograms for domains
 * Sentiment score
