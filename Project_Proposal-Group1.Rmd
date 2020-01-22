@@ -1,5 +1,5 @@
 ---
-title: "Project Proposal - Reddit"
+title: "Project Proposal - Reddit comment helpfulness analysis"
 author: "Anirudh Chaudhary, Quan Le, Richard More, Hao Nguyen"
 date: "January 22, 2020"
 output:
@@ -13,30 +13,30 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Problem Description
-* We want to develop a machine learning model to predict the most helpful comment based on its average score in each thread and the available features in the data such as the comment score or the lifetime of a comment.
-* It is very interesting because it gives an additional option of "High Score Comments" to Reddit's sorting functionality. With our prediction model, we can also propose high score comments to place at the top of each thread which will save a significant amount of time for users to find useful comments. This will help reddit be more attractive then Quora or any other forums.
+* We want to do a sentiment analysis on the **World News subreddit** 
+* It is very interesting because it gives an additional option of "High Score Comments" to Reddit's sorting functionality. With our prediction model, we can also propose high score comments to place at the top of each thread which will save a significant amount of time for users to find useful comments. This will help Reddit be more attractive then Quora or any other forums.
 
 ## Data Collection and Transformation
 * We will use **RedditExtractoR**, **tidyverse**, and other relevant libraries; no secondary data source.
 * Data can be retrieved by supplying the search arguments like so:
 ```{r echo=TRUE, eval=FALSE}
-reddit_content <- get_reddit(
-  subreddit = "Rlanguage",
-  search_terms = "ggplot",
+reddit_links <- reddit_urls(
+  subreddit = "worldnews",
   page_threshold = 10)
+
+reddit_thread <- reddit_content(reddit_links$URL)
 ```
 * Data retrieved as a data frame.
-* Initial data explorations does not seem to violate any tidy rules.
-* Since we are dealing with text data, we will need to clean the text to remove stopwords.
+* Initial data explorations shows no violation of any tidy rules.
+* Since we are dealing with text data, we will need to clean the text to remove stopwords, stemming, etc.
 
-## Analytics Plan: 
-* Bucketize the comment_score and average comment score calculation in score bucket of low, medium, and high.
-* Convert the comment texts to vectors, so we can perform a text analysis on it.
+## Analytics Plan
+* Data exploration for comments based on posting times and number of comments in threads
+* Convert the comment texts to vectors, so we can perform a text analysis on them.
+* N-grams, TF-IDF, Sentiment Analysis
 * Use Sentiments Analysis to predict which bucket the comments should belong.
-* Use Classification Regression for this problem to determine if the average score is low, medium, or high.
-* Summary: we will perform ggplot2, tidyverse, RedditExtractoR, Classification, and Text Analysis
 
-## Evaluation Plan: 
-* To evaluate the model, we will use the confusion matrix and accuracy rate for the model quality.
-* Quantitatively, we hope to achieve at least 75% for the accuracy rate.
-* For validation, we plan to compare the predictions with the actual bucketized comment_score.
+## Evaluation Plan
+* Wordcloud to get most frequent phrases
+* Graphs, histograms for domains
+* Sentiment score
