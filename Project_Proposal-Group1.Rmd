@@ -1,5 +1,5 @@
 ---
-title: "Project Proposal - Reddit comment helpfulness analysis"
+title: "Project Proposal - Reddit sentiment analysis"
 author: "Anirudh Chaudhary, Quan Le, Richard More, Hao Nguyen"
 date: "January 22, 2020"
 output:
