@@ -1355,6 +1355,11 @@ opacity: 0;
 }
 @media print {
 
+@page {
+size: landscape;
+margin: 0;
+}
+
 slides slide {
 display: block !important;
 position: relative;
@@ -3140,8 +3145,8 @@ slide:not(.current) .plotly.html-widget{
 <slide class=""><hgroup><h2>Problem Description</h2></hgroup><article  id="problem-description">
 
 <ul>
-<li>We want to develop a machine learning model to predict the upvote of a comment in each thread based on available features</li>
-<li>It is very interesting to find and promote the most useful or concerned comment about a thread. Users won’t have to spend too much time reading junk comments and just spend time reading what is useful. This will help reddit be more attractive then Quora or any other forums website</li>
+<li>We want to develop a machine learning model to predict the most helpful comment based on its average score in each thread and the available features in the data such as the comment score or the lifetime of a comment.</li>
+<li>It is very interesting because it gives an additional option &ldquo;High Score Comments&rdquo; to Reddit’s sorting functionality. With our prediction model, we can also propose high score comments to place at the top of each thread which will save a significant amount of time for users to find useful comments. This will help reddit be more attractive then Quora or any other forums website</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Data Collection and Transformation</h2></hgroup><article  id="data-collection-and-transformation">
@@ -3159,25 +3164,25 @@ slide:not(.current) .plotly.html-widget{
 <ul>
 <li>Data retrieved as a data frame.</li>
 <li>Initial data explorations does not seem to violate any tidy rules.</li>
-<li>Since we are dealing with text data we will need to clean the text to remove stopwords.</li>
+<li>Since we are dealing with text data, we will need to clean the text to remove stopwords.</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Analytics Plan:</h2></hgroup><article  id="analytics-plan">
 
 <ul>
-<li>Perform some exploratory data analysis with GGPLOT2 to find any interesting pattern concerning up_voted</li>
-<li>Convert the comment text to vectors, so we can perform an analysis on it.</li>
-<li>Use stepwise feature extraction to make R decide what features we should use for the Machine Learning Model.</li>
-<li>Use Linear Regression, Ridge and Lasso for this problem to find the relationship between features and up_voted</li>
-<li>Use ggplot2, tidyverse, RedditExtractoR, Linear Regression, Ridge and Lasso</li>
+<li>Convert the comment texts to vectors, so we can perform a text analysis on it.</li>
+<li>Bucketize the comment_score and average comment score calculation in score bucket of low, medium, and high.</li>
+<li>Use Sentiments Analysis to predict which bucket the comments should belong.</li>
+<li>Use Classification Regression for this problem to determine if the average score is low, medium, or high.</li>
+<li>Use ggplot2, tidyverse, RedditExtractoR, Classification, and Text Analysis</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Evaluation Plan:</h2></hgroup><article  id="evaluation-plan">
 
 <ul>
-<li>To evaluate the model we will use the adjusted R<sup>2</sup>, and RMSE</li>
-<li>Quantitatively, we hope to achieve from 85% - 95% adjusted R<sup>2</sup> and RMSE ~ 5% of mean</li>
-<li>We will use <strong>cross-validation</strong> to ensure we use best parameters on best model with highest learning possible and importance selection using two way <strong>Variable Selection</strong></li>
+<li>To evaluate the model, we will use the confusion matrix and accuracy rate for the model quality.</li>
+<li>Quantitatively, we hope to achieve at least 75% for the accuracy rate.</li>
+<li>For validation, we plan to compare the predictions with the actual bucketized comment_score.</li>
 </ul></article></slide>
 
 

@@ -13,8 +13,8 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Problem Description
-* We want to develop a machine learning model to predict the upvote of a comment in each thread based on available features
-* It is very interesting to find and promote the most useful or concerned comment about a thread. Users won’t have to spend too much time reading junk comments and just spend time reading what is useful. This will help reddit be more attractive then Quora or any other forums website
+* We want to develop a machine learning model to predict the most helpful comment based on its average score in each thread and the available features in the data such as the comment score or the lifetime of a comment.
+* It is very interesting because it gives an additional option of "High Score Comments" to Reddit's sorting functionality. With our prediction model, we can also propose high score comments to place at the top of each thread which will save a significant amount of time for users to find useful comments. This will help reddit be more attractive then Quora or any other forums.
 
 ## Data Collection and Transformation
 * We will use **RedditExtractoR**, **tidyverse**, and other relevant libraries; no secondary data source.
@@ -27,16 +27,16 @@ reddit_content <- get_reddit(
 ```
 * Data retrieved as a data frame.
 * Initial data explorations does not seem to violate any tidy rules.
-* Since we are dealing with text data we will need to clean the text to remove stopwords.
+* Since we are dealing with text data, we will need to clean the text to remove stopwords.
 
 ## Analytics Plan: 
-* Perform some exploratory data analysis with GGPLOT2 to find any interesting pattern concerning up_voted
-* Convert the comment text to vectors, so we can perform an analysis on it.
-* Use stepwise feature extraction to make R decide what features we should use for the Machine Learning Model.
-* Use Linear Regression, Ridge and Lasso for this problem to find the relationship between features and up_voted
-* Use ggplot2, tidyverse, RedditExtractoR, Linear Regression, Ridge and Lasso
+* Bucketize the comment_score and average comment score calculation in score bucket of low, medium, and high.
+* Convert the comment texts to vectors, so we can perform a text analysis on it.
+* Use Sentiments Analysis to predict which bucket the comments should belong.
+* Use Classification Regression for this problem to determine if the average score is low, medium, or high.
+* Summary: we will perform ggplot2, tidyverse, RedditExtractoR, Classification, and Text Analysis
 
 ## Evaluation Plan: 
-* To evaluate the model we will use the adjusted R<sup>2</sup>, and RMSE
-* Quantitatively, we hope to achieve from 85% - 95% adjusted R<sup>2</sup> and RMSE ~ 5% of mean
-* We will use **cross-validation** to ensure we use best parameters on best model with highest learning possible and importance selection using two way **Variable Selection**
+* To evaluate the model, we will use the confusion matrix and accuracy rate for the model quality.
+* Quantitatively, we hope to achieve at least 75% for the accuracy rate.
+* For validation, we plan to compare the predictions with the actual bucketized comment_score.
