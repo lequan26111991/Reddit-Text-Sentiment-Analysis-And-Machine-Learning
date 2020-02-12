@@ -2,6 +2,8 @@
 rm(list = ls())
 Sys.setenv(http_proxy = "https://JNK4QBK:Anhyeuem1991%3F@proxy.corp.ups.com:8080")
 
+setwd("C:/Users/JNK4QBK/Desktop")
+
 #install.packages("RedditExtractoR")
 library(RedditExtractoR)
 library(tidyverse)
@@ -45,3 +47,13 @@ write.table(df_export,"corona_over_time.csv",
 write.table(df_export,"corona_over_time.csv",
             append = FALSE, col.names = TRUE, sep =",", row.names=FALSE)
 }
+
+#Set schedule every day feeding data
+
+install.packages("taskscheduleR")
+library(taskscheduleR)
+myscript <- system.file("reddit_corona.R")
+
+taskscheduler_create(taskname = "CORONA_UPDATE", 
+                     rscript = "C:/Users/JNK4QBK/Desktop/reddit_corona.R",schedule = "DAILY", 
+                     starttime = "23:50", startdate = format(Sys.Date()+1, "%d/%m/%Y"))
