@@ -1,7 +1,4 @@
 
-rm(list = ls())
-Sys.setenv(http_proxy = "https://JNK4QBK:Anhyeuem1991%3F@proxy.corp.ups.com:8080")
-
 setwd("C:/Users/JNK4QBK/Desktop")
 
 #install.packages("RedditExtractoR")
