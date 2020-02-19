@@ -1,7 +1,7 @@
 ---
 title: "REDDIT SENTIMENT PROJECT"
 author: "Richard More | Quan Le | Hao Nguyen | Anirudh Chaudhary"
-date: "Date: 2/19/2020"
+date: "Date: 02/19/2020"
 output: 
   html_document:
     theme: readable
@@ -46,13 +46,7 @@ h4.date {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### 1. Reddit Sentiment Analysis
-
-#### A. Preprocess Data
-
-Import The neccessary packages
-```{r}
-#install.packages("RedditExtractoR")
+```{r libs, warning=FALSE, message=FALSE}
 library(RedditExtractoR)
 library(tidyverse)
 library(wordcloud)
@@ -64,27 +58,29 @@ library(readr)
 library(RCurl)
 ```
 
-Retrieve Reddit Information
-```{r}
-#gather data
-r <- reddit_urls(subreddit = "Coronavirus", page_threshold = 20)
+## Reddit Final Project
+
+### 1. Reddit Sentiment Analysis
+
+#### Retrieve Reddit Information
+
+```{r gather_data, warning=FALSE, message=FALSE, results="hide"}
+r <- reddit_urls(subreddit = "Coronavirus", page_threshold = 10)
 rc <- reddit_content(r$URL)
 rc_rel <- rc[c("comment", "comment_score", "post_score")]
 rc_rel <- mutate(rc_rel, id = rownames(rc_rel))
 ```
 
-Clean and transform sentiment
-```{r}
-#get tokens from comments
+#### Clean and transform sentiment
+
+```{r claning}
 tokens <- rc_rel %>%
   unnest_tokens(output = word, input = comment)
 
-#remove stopwords
 sw = get_stopwords()
 cleaned_tokens <- tokens %>%
   filter(!word %in% sw$word)
 
-#remove some words based on regex
 nums <- cleaned_tokens %>%
   filter(str_detect(word, "^[0-9]|http[s]?|.com$")) %>%
   select(word) %>% unique()
@@ -92,7 +88,6 @@ nums <- cleaned_tokens %>%
 cleaned_tokens <- cleaned_tokens %>%
   filter(!word %in% nums$word)
 
-#remove rare words
 rare <- cleaned_tokens %>%
   count(word) %>%
   filter(n < 10) %>%
@@ -101,14 +96,13 @@ rare <- cleaned_tokens %>%
 
 cleaned_tokens <- cleaned_tokens %>%
   filter(!word %in% rare$word)
-
 ```
 
 #### B. WordCloud Visualization of World News
 
 Wordcloud all cleaned tokens
-```{r}
-#wordcloud
+
+```{r wordcloud}
 pal <- brewer.pal(8,"Dark2")
 cleaned_tokens %>%
   count(word) %>%
@@ -116,8 +110,8 @@ cleaned_tokens %>%
 ```
 
 Join tokens with Bing, NRC, and Afinn
-```{r}
-#sentiments
+
+```{r sentiments, warning=FALSE, message=FALSE}
 sent_reviews = cleaned_tokens %>%
   left_join(get_sentiments("nrc")) %>%
   rename(nrc = sentiment) %>%
@@ -129,18 +123,17 @@ sent_reviews = cleaned_tokens %>%
 
 #### C. WordCloud Visualization of Corona Virus
 
-Get Review of Corona
-```{r}
-#modifications for corona
-#sent_reviews %>% filter(word == "corona")
+Sentiment for the word "corona" is not present in the above mentioned 3 sentiment lexicons, so we have to add our own.
+
+```{r corona_sentiment}
 sent_reviews <- sent_reviews %>%
   mutate(bing = ifelse(word == "corona", "negative", bing)) %>%
   mutate(nrc = ifelse(word == "corona", "negative", nrc))
 ```
 
 Wordcloud with Bing Lexicon
-```{r}
-#graph for bing top words
+
+```{r sentiment_bing}
 bing_word_counts <- sent_reviews %>%
   filter(!is.na(bing)) %>%
   count(word, bing, sort = TRUE)
@@ -152,12 +145,11 @@ bing_word_counts %>%
   ggplot(aes(word, n, fill = bing)) +  geom_col() +
   coord_flip() +
   labs(y = "Contribution to sentiment")
-
 ```
 
 Wordcloud with NRC Lexicon
-```{r}
-#graph for nrc top words
+
+```{r sentiment_nrc_wordcloud}
 nrc_word_counts <- sent_reviews %>%
   filter(!is.na(nrc)) %>%
   count(word, nrc, sort = TRUE)
@@ -169,12 +161,19 @@ nrc_word_counts %>%
   ggplot(aes(word, n, fill = nrc)) +  geom_col() +
   coord_flip() +
   labs(y = "Contribution to sentiment")
+```
 
-#graph of the nrc category numbers
+Distribution of sentiments
+
+```{r sentiment_nrc_graph}
 sent_reviews %>%
   filter(!is.na(nrc)) %>%
-  ggplot(., aes(x = nrc)) +
-  geom_bar()
+  group_by(nrc) %>%
+  summarise(count = n()) %>%
+  ggplot(., aes(x = reorder(nrc, -count), y = count)) +
+    geom_bar(stat = "identity") +
+    xlab("NRC") +
+    labs(title = "Distribution of sentiments")
 ```
 
 #### D. Chart for Concern of Corona Virus Overtime on Reddit
@@ -233,38 +232,43 @@ Code to create a schedule for Corona aggregation
 
 Import csv of Corona aggregation and visualize by barchart + line
 ```{r}
-urlfile="https://github.com/hnguyen154/RedditBigDataProject/blob/master/corona_over_time.csv"
-
-#Get the csv from Github
-x <- getURL(urlfile)
-df_corona_plot <- read.csv(text = x)
-
-#df_corona_plot <- read.csv("corona_over_time.csv")
-
-#Untidy data for visualization
-df_plot <- df_corona_plot %>%   
-  gather('Count_Corona', 'Count_World', key = "Categories", value = "Total_Comments")
-
-#Plot the Corona Concern
-ggplot(df_plot, aes(fill=Categories, y=Total_Comments, x=Date)) + 
-  geom_bar(position="dodge", stat="identity") +geom_line(aes(x=Date, y=Total_Comments, group=Categories))+
-  geom_point()
+# urlfile="https://github.com/hnguyen154/RedditBigDataProject/blob/master/corona_over_time.csv"
+# 
+# #Get the csv from Github
+# x <- getURL(urlfile)
+# df_corona_plot <- read.csv(text = x)
+# 
+# #df_corona_plot <- read.csv("corona_over_time.csv")
+# 
+# #Untidy data for visualization
+# df_plot <- df_corona_plot %>%   
+#   gather('Count_Corona', 'Count_World', key = "Categories", value = "Total_Comments")
+# 
+# #Plot the Corona Concern
+# ggplot(df_plot, aes(fill=Categories, y=Total_Comments, x=Date)) + 
+#   geom_bar(position="dodge", stat="identity") +geom_line(aes(x=Date, y=Total_Comments, group=Categories))+
+#   geom_point()
 ```
 
 ### 2. Reddit Sentiment Machine Learning
 
 #### A. Preprocess Data for Machine Learning
 
-Create df with NRC Lexicon
-```{r}
-#id as integer
-sent_reviews <- sent_reviews %>% mutate(id = as.integer(id))
+Pulling the sentiment results together for the individual comments for machine learning.
 
-#base df
-df0 <- sent_reviews %>% select("id", "comment_score", "post_score") %>% unique()
+```{r create_df0}
+sent_reviews <- sent_reviews %>%
+  mutate(id = as.integer(id))
 
-#these will be the columns basically
-nrcs <- sent_reviews %>% select("nrc") %>% unique() %>% na.omit() %>% as.list()
+df0 <- sent_reviews %>%
+  select("id", "comment_score", "post_score") %>%
+  unique()
+
+nrcs <- sent_reviews %>%
+  select("nrc") %>%
+  unique() %>%
+  na.omit() %>%
+  as.list()
 
 for (nrcx in nrcs$nrc) {
   df1 <- sent_reviews %>%
@@ -280,15 +284,16 @@ for (nrcx in nrcs$nrc) {
 }
 ```
 
-Clean training data
-```{r}
+Preparing the data for machine learning.
+
+```{r preprocess_df0}
 x_train_tbl <- df0 %>% select(-c(comment_score, id))
 y_train_tbl <- df0 %>% select(comment_score)
 
 x_train_tbl_skim = partition(skim(x_train_tbl))
 
 rec_obj <- recipe(~ ., data = x_train_tbl) %>%
-  step_meanimpute(all_numeric()) %>% # missing values in numeric columns
+  step_meanimpute(all_numeric()) %>%
   prep(training = x_train_tbl)
 
 x_train_processed_tbl <- bake(rec_obj, x_train_tbl)
@@ -297,33 +302,40 @@ x_train_processed_tbl <- bake(rec_obj, x_train_tbl)
 #### B. Create Machine Learning Model
 
 Initiate an H2O Intance
-```{r}
-#h2o
+
+```{r h2o_init, warning=FALSE, message=FALSE, results="hide"}
 h2o.init(nthreads = -1)
-h2o.clusterInfo()
 h2o.removeAll()
+
 data_h2o <- as.h2o(
   bind_cols(y_train_tbl, x_train_processed_tbl),
   destination_frame= "train.hex"
 )
 ```
 
-Train, Test, Validate Split
-```{r}
+Train, Test, Validate Split in 70%, 15%, and 15%.
+
+```{r data_split}
 splits <- h2o.splitFrame(data = data_h2o,
-                         ratios = c(0.7, 0.15), # 70/15/15 split
+                         ratios = c(0.7, 0.15),
                          seed = 1234)
 train_h2o <- splits[[1]]
 valid_h2o <- splits[[2]]
 test_h2o  <- splits[[3]]
-
-y <- "comment_score"
-x <- setdiff(names(train_h2o), y)
-
 ```
 
 Build Machine Learning models
-```{r}
+
+```{r h2o_run, warning=FALSE, message=FALSE, results="hide"}
+y <- "comment_score"
+x <- setdiff(names(train_h2o), y)
+
+hyper_prms <- list(
+  ntrees = c(45, 50, 55),
+  learn_rate = c(0.1, 0.2),
+  max_depth = c(20, 25)
+)
+
 grid_gbm <- h2o.grid(
   grid_id="grid_gbm",
   algorithm = "gbm",
@@ -345,8 +357,8 @@ grid_gbm <- h2o.grid(
 ```
 
 Choose the best model out of grid
-```{r}
+
+```{r h2o_results}
 grid <- h2o.getGrid("grid_gbm", sort_by = "rmse", decreasing = FALSE)
 dl_grid_best_model <- h2o.getModel(grid@summary_table$model_ids[1])
 ```
-
