@@ -55,7 +55,6 @@ library(recipes)
 library(skimr)
 library(h2o)
 library(readr)
-library(httr)
 library(RCurl)
 ```
 
@@ -233,20 +232,22 @@ Code to create a schedule for Corona aggregation
 
 Import csv of Corona aggregation and visualize by barchart + line
 ```{r}
-urlfile="https://raw.githubusercontent.com/hnguyen154/RedditBigDataProject/master/corona_over_time.csv"
-
- #Get the csv from Github
- x <- getURL(urlfile)
- df_corona_plot <- read.csv(text = x)
- 
- #Untidy data for visualization
- df_plot <- df_corona_plot %>%   
-   gather('Count_Corona', 'Count_World', key = "Categories", value = "Total_Comments")
- 
- #Plot the Corona Concern
- ggplot(df_plot, aes(fill=Categories, y=Total_Comments, x=Date)) + 
-   geom_bar(position="dodge", stat="identity") +geom_line(aes(x=Date, y=Total_Comments, group=Categories))+
-   geom_point()
+# urlfile="https://github.com/hnguyen154/RedditBigDataProject/blob/master/corona_over_time.csv"
+# 
+# #Get the csv from Github
+# x <- getURL(urlfile)
+# df_corona_plot <- read.csv(text = x)
+# 
+# #df_corona_plot <- read.csv("corona_over_time.csv")
+# 
+# #Untidy data for visualization
+# df_plot <- df_corona_plot %>%   
+#   gather('Count_Corona', 'Count_World', key = "Categories", value = "Total_Comments")
+# 
+# #Plot the Corona Concern
+# ggplot(df_plot, aes(fill=Categories, y=Total_Comments, x=Date)) + 
+#   geom_bar(position="dodge", stat="identity") +geom_line(aes(x=Date, y=Total_Comments, group=Categories))+
+#   geom_point()
 ```
 
 ### 2. Reddit Sentiment Machine Learning
