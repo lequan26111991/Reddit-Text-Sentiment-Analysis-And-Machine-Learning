@@ -41,7 +41,6 @@ h4.date {
 
 </style>
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -54,7 +53,6 @@ library(tidytext)
 library(recipes)
 library(skimr)
 library(h2o)
-library(readr)
 library(RCurl)
 ```
 
@@ -65,7 +63,7 @@ library(RCurl)
 #### Retrieve Reddit Information
 
 ```{r gather_data, warning=FALSE, message=FALSE, results="hide"}
-r <- reddit_urls(subreddit = "Coronavirus", page_threshold = 10)
+r <- reddit_urls(subreddit = "Coronavirus", page_threshold = 20)
 rc <- reddit_content(r$URL)
 rc_rel <- rc[c("comment", "comment_score", "post_score")]
 rc_rel <- mutate(rc_rel, id = rownames(rc_rel))
@@ -178,76 +176,65 @@ sent_reviews %>%
 
 #### D. Chart for Concern of Corona Virus Overtime on Reddit
 
+In this section we are....
+The following 2 code chunks are not run when creating the final HTML.
 Set up the code to aggregate number of comment about World News and Corona everyday
-```{r}
-# Aggregate Corona Virus
-df_corona <- rc %>% filter(str_detect(title,"corona") | 
-                             str_detect(title,"Corona") |
-                             str_detect(title,"CORONA") |
-                             str_detect(title,"2019-nCOV") |
-                             str_detect(title,"COVID-19") |
-                             str_detect(title,"Covid-19") |
-                             str_detect(title,"covid-19")) %>%
+
+```{r csv_creation, eval=FALSE}
+df_corona <- rc %>%
+  filter(str_detect(title,"corona|Corona|CORONA|2019-nCOV") |
+         str_detect(title,"COVID-19|Covid-19|covid-19")) %>%
   select(comm_date) %>%
   group_by(comm_date) %>% 
   count(comm_date)
 
-#change the file Name of Corona
-c_name <- c("Date","Count_Corona")
-colnames(df_corona) <- c_name
+colnames(df_corona) <- c("Date", "Count_Corona")
 
-# Aggregate World
 df_world <- rc %>% 
   select(comm_date) %>%
   group_by(comm_date) %>%
   count(comm_date)
 
-#change the file Name of World
-w_name <- c("Date","Count_World")
-colnames(df_world) <- w_name
+colnames(df_world) <- c("Date", "Count_World")
 
-df_export <- inner_join(df_world,df_corona, by ="Date")
+df_export <- inner_join(df_world, df_corona, by = "Date")
 
 if (file.exists("corona_over_time.csv") == TRUE){
   write.table(df_export,"corona_over_time.csv",
-              append = TRUE, col.names = FALSE, sep =",", row.names=FALSE)
+              append = TRUE, col.names = FALSE, sep = ",", row.names = FALSE)
 } else {
   write.table(df_export,"corona_over_time.csv",
-              append = FALSE, col.names = TRUE, sep =",", row.names=FALSE)
+              append = FALSE, col.names = TRUE, sep = ",", row.names = FALSE)
 }
 ```
 
 Code to create a schedule for Corona aggregation
-```{r}
-#Set schedule everyday to feed data
+Set schedule everyday to feed data
+```{r scheduler, eval=FALSE}
+library(taskscheduleR)
+myscript <- system.file("reddit_corona.R")
 
-#install.packages("taskscheduleR")
-#library(taskscheduleR)
-#myscript <- system.file("reddit_corona.R")
-
-#taskscheduler_create(taskname = "CORONA_UPDATE", 
-                     #rscript = "C:/Users/JNK4QBK/Desktop/reddit_corona.R",schedule = "DAILY", 
-                     #starttime = "23:50", startdate = format(Sys.Date()+1, "%d/%m/%Y"))
+taskscheduler_create(taskname = "CORONA_UPDATE",
+                     rscript = "C:/Users/JNK4QBK/Desktop/reddit_corona.R",
+                     schedule = "DAILY",
+                     starttime = "23:50",
+                     startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
 ```
 
 Import csv of Corona aggregation and visualize by barchart + line
-```{r}
- urlfile="https://raw.githubusercontent.com/hnguyen154/RedditBigDataProject/master/corona_over_time.csv"
- 
- #Get the csv from Github
- x <- getURL(urlfile)
- df_corona_plot <- read.csv(text = x)
- 
- #df_corona_plot <- read.csv("corona_over_time.csv")
- 
- #Untidy data for visualization
- df_plot <- df_corona_plot %>%   
-   gather('Count_Corona', 'Count_World', key = "Categories", value = "Total_Comments")
- 
- #Plot the Corona Concern
- ggplot(df_plot, aes(fill=Categories, y=Total_Comments, x=Date)) + 
-   geom_bar(position="dodge", stat="identity") +geom_line(aes(x=Date, y=Total_Comments, group=Categories))+
-   geom_point()
+```{r csv_part}
+urlfile="https://raw.githubusercontent.com/hnguyen154/RedditBigDataProject/master/corona_over_time.csv"
+
+x <- getURL(urlfile)
+df_corona_plot <- read.csv(text = x)
+
+df_plot <- df_corona_plot %>%
+  gather("Count_Corona", "Count_World", key = "Categories", value = "Total_Comments")
+
+ggplot(df_plot, aes(x = Date, y = Total_Comments, fill = Categories)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  geom_line(aes(x=Date, y=Total_Comments, group=Categories)) +
+  geom_point()
 ```
 
 ### 2. Reddit Sentiment Machine Learning
