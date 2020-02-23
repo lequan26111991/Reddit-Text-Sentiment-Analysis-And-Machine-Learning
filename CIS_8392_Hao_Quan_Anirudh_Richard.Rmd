@@ -7,7 +7,7 @@ output:
     theme: readable
     highlight: zenburn
     toc: true
-    toc_depth: 3
+    toc_depth: 4
     toc_float: 
       collapsed: false
 header-includes:
@@ -60,7 +60,7 @@ library(RCurl)
 
 ### 1. Reddit Sentiment Analysis
 
-#### Retrieve Reddit Information
+#### A. Retrieve Reddit Information
 
 ```{r gather_data, warning=FALSE, message=FALSE, results="hide"}
 r <- reddit_urls(subreddit = "Coronavirus", page_threshold = 20)
@@ -69,7 +69,7 @@ rc_rel <- rc[c("comment", "comment_score", "post_score")]
 rc_rel <- mutate(rc_rel, id = rownames(rc_rel))
 ```
 
-#### Clean and transform sentiment
+#### B. Clean and Transform Sentiment
 
 ```{r claning}
 tokens <- rc_rel %>%
@@ -96,7 +96,7 @@ cleaned_tokens <- cleaned_tokens %>%
   filter(!word %in% rare$word)
 ```
 
-#### B. WordCloud Visualization of World News
+#### C. WordCloud Visualization of World News
 
 Wordcloud all cleaned tokens
 
@@ -119,7 +119,7 @@ sent_reviews = cleaned_tokens %>%
   rename(afinn = value)
 ```
 
-#### C. WordCloud Visualization of Corona Virus
+#### D. WordCloud Visualization of Corona Virus
 
 Sentiment for the word "corona" is not present in the above mentioned 3 sentiment lexicons, so we have to add our own.
 
@@ -174,7 +174,7 @@ sent_reviews %>%
     labs(title = "Distribution of sentiments")
 ```
 
-#### D. Chart for Concern of Corona Virus Overtime on Reddit
+#### E. Chart for Concern of Corona Virus Overtime on Reddit
 
 In this section we are....
 The following 2 code chunks are not run when creating the final HTML.
