@@ -56,7 +56,7 @@ library(h2o)
 library(RCurl)
 ```
 
-### 1. Reddit Sentiment Analysis
+### 1. REDDIT SENTIMENT ANALYSIS
 
 #### A. Retrieve Reddit Information
 
@@ -235,7 +235,7 @@ ggplot(df_plot, aes(x = Date, y = Total_Comments, fill = Categories)) +
   geom_point()
 ```
 
-### 2. Reddit Sentiment Machine Learning
+### 2. REDDIT SENTIMENT MACHINE LEARNING
 
 #### A. Preprocess Data for Machine Learning
 
