@@ -56,8 +56,6 @@ library(h2o)
 library(RCurl)
 ```
 
-## Reddit Final Project
-
 ### 1. Reddit Sentiment Analysis
 
 #### A. Retrieve Reddit Information
