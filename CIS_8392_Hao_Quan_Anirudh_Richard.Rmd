@@ -7,7 +7,7 @@ output:
     theme: readable
     highlight: zenburn
     toc: true
-    toc_depth: 4
+    toc_depth: 3
     toc_float: 
       collapsed: false
 header-includes:
@@ -46,35 +46,28 @@ h4.date {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### I. INTRODUCTION
-
-#### 1. Overview 
-
+<h1>Introduction</h1>
+<h2> Overview </h2>
 <p>
 We choose <https://www.reddit.com/> as our primary platform for the sentiment analysis. We choose Corona virus as our subreddit due to the current outbreak. We would like to explore what is everyone main reaction to this topic.
 </p>
 
-#### 2. Data Source 
-
+<h2> Data Source </h2>
 <p>
 We will use RedditExtractoR, tidyverse, and other relevant libraries. RedditExtractoR or Reddit Data Extraction Toolkit is created by Ivan Rivera where we can fetch the thread and content through the reddit URL. For more information, please visit <https://www.reddit.com/dev/api>.
 </p>
 
-#### 3. Summary 
-
+<h2> Summary </h2>
 <p>
 Comments, Comment's scores, and post comments were the three main data that we retrieve for Corona Virus. After cleaning the stopwords and joinging the tokens with  Bing, NRC, and Afinn, we analyzed the trend of Corona Virus through the distribution of Sentiments and comments about Corona and World news over time. 
 </p>
 
-#### 4. Modeling 
-
+<h2> Modeling </h2>
 <p>
 Based on these analysis, we try to predict the comment scores with Gradient Boosting Machines and Linear Regression with the H2O instance. 
+
 </p>
 
-#### 5. Libraries
-
-<p> The following libraries will be used in our projects </p>
 
 ```{r libs, warning=FALSE, message=FALSE}
 library(RedditExtractoR)
@@ -87,9 +80,9 @@ library(h2o)
 library(RCurl)
 ```
 
-### II. REDDIT SENTIMENT ANALYSIS
+### 1. REDDIT SENTIMENT ANALYSIS
 
-#### 1. Retrieve Reddit Information
+#### A. Retrieve Reddit Information
 
 ```{r gather_data, warning=FALSE, message=FALSE, results="hide"}
 r <- reddit_urls(subreddit = "Coronavirus", page_threshold = 20)
@@ -98,7 +91,7 @@ rc_rel <- rc[c("comment", "comment_score", "post_score")]
 rc_rel <- mutate(rc_rel, id = rownames(rc_rel))
 ```
 
-#### 2. Clean and Transform Sentiment
+#### B. Clean and Transform Sentiment
 
 ```{r claning}
 tokens <- rc_rel %>%
@@ -125,7 +118,7 @@ cleaned_tokens <- cleaned_tokens %>%
   filter(!word %in% rare$word)
 ```
 
-#### 3. WordCloud Visualization of World News
+#### C. WordCloud Visualization of World News
 
 Wordcloud all cleaned tokens
 
@@ -148,7 +141,7 @@ sent_reviews = cleaned_tokens %>%
   rename(afinn = value)
 ```
 
-#### 4. WordCloud Visualization of Corona Virus
+#### D. WordCloud Visualization of Corona Virus
 
 Sentiment for the word "corona" is not present in the above mentioned 3 sentiment lexicons, so we have to add our own.
 
@@ -203,7 +196,7 @@ sent_reviews %>%
     labs(title = "Distribution of sentiments")
 ```
 
-#### 5. Chart for Concern of Corona Virus Overtime on Reddit
+#### E. Chart for Concern of Corona Virus Overtime on Reddit
 
 In this section we are....
 The following 2 code chunks are not run when creating the final HTML.
@@ -239,7 +232,6 @@ if (file.exists("corona_over_time.csv") == TRUE){
 
 Code to create a schedule for Corona aggregation
 Set schedule everyday to feed data
-
 ```{r scheduler, eval=FALSE}
 library(taskscheduleR)
 myscript <- system.file("reddit_corona.R")
@@ -252,7 +244,7 @@ taskscheduler_create(taskname = "CORONA_UPDATE",
 ```
 
 Import csv of Corona aggregation and visualize by barchart + line
-```{r  fig.width=10, fig.height=8}
+```{r csv_part}
 urlfile="https://raw.githubusercontent.com/hnguyen154/RedditBigDataProject/master/corona_over_time.csv"
 
 x <- getURL(urlfile)
@@ -267,9 +259,9 @@ ggplot(df_plot, aes(x = Date, y = Total_Comments, fill = Categories)) +
   geom_point()
 ```
 
-### III. REDDIT SENTIMENT MACHINE LEARNING
+### 2. REDDIT SENTIMENT MACHINE LEARNING
 
-#### 1. Preprocess Data for Machine Learning
+#### A. Preprocess Data for Machine Learning
 
 Pulling the sentiment results together for the individual comments for machine learning.
 
@@ -316,7 +308,7 @@ rec_obj <- recipe(~ ., data = x_train_tbl) %>%
 x_train_processed_tbl <- bake(rec_obj, x_train_tbl)
 ```
 
-#### 2. Create Machine Learning Model
+#### B. Create Machine Learning Model
 
 Initiate an H2O Intance
 
@@ -341,7 +333,7 @@ valid_h2o <- splits[[2]]
 test_h2o  <- splits[[3]]
 ```
 
-#### 3. Gradient Boosting Model
+#### C. Gradient Boosting Model
 
 ```{r h2o_run, warning=FALSE, message=FALSE, results="hide"}
 y <- "comment_score"
@@ -381,7 +373,7 @@ dl_grid_best_model <- h2o.getModel(grid@summary_table$model_ids[1])
 dl_grid_best_model
 ```
 
-#### 4. Linear Regression Model
+#### D. Linear Regression Model
 
 ```{r h2o_linearRegression, warning=FALSE, message=FALSE}
 hyper_params <- list( alpha = c(0, .25, .5, .75, .1) )
@@ -402,6 +394,5 @@ dl_grid_best_model
 ```
 
 
-#### 5. Result and Discussion
-
+#### E. Result and Discussion
 After we fit the model Linear Regression and Gradient Boosting model, we attempt to find the best model based on the RMSE and R-Square in the report on validation data. However, the data shows a low R-Square and high RMSE. 
