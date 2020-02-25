@@ -1,13 +1,13 @@
 ---
 title: "REDDIT SENTIMENT PROJECT"
 author: "Richard More | Quan Le | Hao Nguyen | Anirudh Chaudhary"
-date: "Date: 02/19/2020"
+date: "Date: 02/26/2020"
 output: 
   html_document:
     theme: readable
     highlight: zenburn
     toc: true
-    toc_depth: 4
+    toc_depth: 3
     toc_float: 
       collapsed: false
 header-includes:
@@ -39,11 +39,35 @@ h4.date {
   text-align: center;
 }
 
+
 </style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<h1>Introduction</h1>
+<h2> Overview </h2>
+<p>
+We choose <https://www.reddit.com/> as our primary platform for the sentiment analysis. We choose Corona virus as our subreddit due to the current outbreak. We would like to explore what is everyone main reaction to this topic.
+</p>
+
+<h2> Data Source </h2>
+<p>
+We will use RedditExtractoR, tidyverse, and other relevant libraries. RedditExtractoR or Reddit Data Extraction Toolkit is created by Ivan Rivera where we can fetch the thread and content through the reddit URL. For more information, please visit <https://www.reddit.com/dev/api>.
+</p>
+
+<h2> Summary </h2>
+<p>
+Comments, Comment's scores, and post comments were the three main data that we retrieve for Corona Virus. After cleaning the stopwords and joinging the tokens with  Bing, NRC, and Afinn, we analyzed the trend of Corona Virus through the distribution of Sentiments and comments about Corona and World news over time. 
+</p>
+
+<h2> Modeling </h2>
+<p>
+Based on these analysis, we try to predict the comment scores with Gradient Boosting Machines and Linear Regression with the H2O instance. 
+
+</p>
+
 
 ```{r libs, warning=FALSE, message=FALSE}
 library(RedditExtractoR)
@@ -309,7 +333,7 @@ valid_h2o <- splits[[2]]
 test_h2o  <- splits[[3]]
 ```
 
-Build Machine Learning models
+#### C. Gradient Boosting Model
 
 ```{r h2o_run, warning=FALSE, message=FALSE, results="hide"}
 y <- "comment_score"
@@ -346,4 +370,29 @@ Choose the best model out of grid
 ```{r h2o_results}
 grid <- h2o.getGrid("grid_gbm", sort_by = "rmse", decreasing = FALSE)
 dl_grid_best_model <- h2o.getModel(grid@summary_table$model_ids[1])
+dl_grid_best_model
 ```
+
+#### D. Linear Regression Model
+
+```{r h2o_linearRegression, warning=FALSE, message=FALSE}
+hyper_params <- list( alpha = c(0, .25, .5, .75, .1) )
+
+# build grid search with previously selected hyperparameters
+grid <- h2o.grid(x = x, y = y, training_frame = train_h2o, validation_frame = valid_h2o,
+                 algorithm = "glm", grid_id = "grid_lr", hyper_params = hyper_params,
+                 search_criteria = list(strategy = "Cartesian"))
+  
+```  
+
+Choose the best model out of grid
+
+```{r h2o_lr_results}
+grid <- h2o.getGrid("grid_lr", sort_by = "rmse", decreasing = FALSE)
+dl_grid_best_model <- h2o.getModel(grid@summary_table$model_ids[1])
+dl_grid_best_model 
+```
+
+
+#### E. Result and Discussion
+After we fit the model Linear Regression and Gradient Boosting model, we attempt to find the best model based on the RMSE and R-Square in the report on validation data. However, the data shows a low R-Square and high RMSE. 
