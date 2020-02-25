@@ -47,31 +47,31 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### I. INTRODUCTION
 
-#### 1. Overview
+#### A. Overview
 
 <p>
 We choose <https://www.reddit.com/> as our primary platform for the sentiment analysis. We chose Corona virus as our subreddit due to the current outbreak. We would like to explore what is the Reddit community's main reaction to this topic.
 </p>
 
-#### 2. Data Source
+#### B. Data Source
 
 <p>
 We will use RedditExtractoR, tidyverse, and other relevant libraries. RedditExtractoR (or Reddit Data Extraction Toolkit is created by Ivan Rivera) is the package with which we can fetch the thread and content through the Reddit URL. For more information, please visit <https://www.reddit.com/dev/api>.
 </p>
 
-#### 3. Summary
+#### C. Summary
 
 <p>
 Comments, Comment's scores, and post scores are the attributes we will work with. After cleaning the stopwords and joinging the tokens with  Bing, NRC, and Afinn, we analyzed the trend of Corona Virus through the distribution of Sentiments and comments about Corona and World news over time.
 </p>
 
-#### 4. Modeling
+#### D. Modeling
 
 <p>
 Based on these analysis, we try to predict the comment scores with Gradient Boosting Machines and Linear Regression with the H2O instance.
 </p>
 
-#### 5. Libraries
+#### E. Libraries
 
 <p>
 The following libraries will be used in our projects
@@ -185,7 +185,7 @@ bing_word_counts <- sent_reviews %>%
   count(word, bing, sort = TRUE)
 
 bing_word_counts %>%
-  filter(n > 250) %>%
+  filter(n > 350) %>%
   mutate(n = ifelse(bing == "negative", -n, n)) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word, n, fill = bing)) +
@@ -303,9 +303,11 @@ ggplot(df_plot, aes(x = Date, y = Total_Comments, fill = Categories)) +
 
 ### III. REDDIT SENTIMENT MACHINE LEARNING
 
+For the machine learning part we are trying to create a model that can predict a comment's score based on the score of the parent post and the comment's NRC sentiments (more specifically the distribution of the sentiment types, like 8 trust words and 2 anger words, etc.)
+
 #### A. Preprocess Data for Machine Learning
 
-Pulling the sentiment results together for the individual comments for machine learning.
+In the first step we are pulling the sentiment results together for the individual comments for machine learning.
 
 ```{r create_df0}
 sent_reviews <- sent_reviews %>%
