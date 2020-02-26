@@ -96,3 +96,4 @@ After processing data was divided:
 * ML metrics can change significantly in a day after getting fresh data
   * RMSE 3 vs 15
 * Further spread of the Corona virus --> wordcloud changes
+* Since no cure for Coronavirus yet, people are having more negative sentiments than positive ones --> evident from bing visualization
