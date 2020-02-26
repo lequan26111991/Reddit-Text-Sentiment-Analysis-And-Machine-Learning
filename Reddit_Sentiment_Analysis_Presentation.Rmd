@@ -8,6 +8,10 @@ output:
     logo: Reddit_logo_orange.svg #https://upload.wikimedia.org/wikipedia/commons/e/e5/Reddit_logo_orange.svg
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 ## **Data Analytics Plan**
 
 We used https://www.reddit.com/ for the sentiment analysis of the recent Corona Virus outbreak. The idea behind it is to analyse Reddit community's reaction to this outbreak by tracking the comments in Corona and World News subreddits.
@@ -36,10 +40,34 @@ Attributes used:
 ## **Sentiment Distribution**
 ![](sentiment_distribution.PNG){width=75%}
 
-
 ## **Corona Virus Comment Trend**
 ![](Corona_virus_comment_trend.PNG){width=75%}
 
+## **Sentiment output to ML?** {.columns-2}
+```{r sent2ml, eval=FALSE}
+df0 <- sent_reviews %>%
+  select("id", "post_score", "comment_score") %>%
+  unique()
+
+nrcs <- sent_reviews %>%
+  select("nrc") %>%
+  unique() %>%
+  na.omit() %>%
+  as.list()
+
+for (nrcx in nrcs$nrc) {
+  df1 <- sent_reviews %>%
+    select("id", "nrc") %>%
+    filter(nrc == nrcx) %>%
+    group_by(id) %>%
+    summarise(num = n()) %>%
+    arrange(id)
+
+  colnames(df1)[2] <- paste0("nrc_", nrcx)
+
+  df0 <- full_join(df0, df1, by = "id")
+}
+```
 
 ## **ML Model Procedures**
 
@@ -64,3 +92,7 @@ After processing data was divided:
 ![](LinearReg_Results.PNG)
 
 ## **Key Take-aways**
+
+* ML metrics can change significantly in a day after getting fresh data
+  * RMSE 3 vs 15
+* Further spread of the Corona virus --> wordcloud changes
