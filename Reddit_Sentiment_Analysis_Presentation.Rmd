@@ -43,31 +43,8 @@ Attributes used:
 ## **Corona Virus Comment Trend**
 ![](Corona_virus_comment_trend.PNG){width=75%}
 
-## **Sentiment output to ML?** {.columns-2}
-```{r sent2ml, eval=FALSE}
-df0 <- sent_reviews %>%
-  select("id", "post_score", "comment_score") %>%
-  unique()
-
-nrcs <- sent_reviews %>%
-  select("nrc") %>%
-  unique() %>%
-  na.omit() %>%
-  as.list()
-
-for (nrcx in nrcs$nrc) {
-  df1 <- sent_reviews %>%
-    select("id", "nrc") %>%
-    filter(nrc == nrcx) %>%
-    group_by(id) %>%
-    summarise(num = n()) %>%
-    arrange(id)
-
-  colnames(df1)[2] <- paste0("nrc_", nrcx)
-
-  df0 <- full_join(df0, df1, by = "id")
-}
-```
+## **Sentiment output to ML**
+![](Sentiment_Output.PNG){width=100%}
 
 ## **ML Model Procedures**
 
