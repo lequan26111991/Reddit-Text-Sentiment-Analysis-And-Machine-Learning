@@ -1,0 +1,62 @@
+---
+title: "REDDIT SENTIMENT PROJECT"
+author: "Richard More | Quan Le | Hao Nguyen | Anirudh Chaudhary"
+date: "2/26/2020"
+output: powerpoint_presentation 
+       
+---
+
+## **Data Analytics Plan**
+
+We used https://www.reddit.com/ for the sentiment analysis of the recent Corona Virus outbreak. The idea behind it is to analyse Reddit community's reaction to this outbreak by tracking the comments in Corona and World News subreddits.
+
+Attributes used:
+*Comments*, *Comments Score* and *Post Score*
+
+## **Peer Comments Summary**
+
+- Inclusion of Deep learning models and machine learning techniques
+- To implement clustering in the analysis
+- Use PCA to reduce the number of features for faster computation
+- Use predefined sentiment lexicons like bing, nrc in tidytext package
+- To handle grammatical nuances, misspellings, and ambiguity during analysis
+
+## **Word Cloud Visualization**
+![](wordcloud.png)
+
+
+## **Sentiment Visualization using bing**
+![](sentiment_bing.png)
+
+## **Sentiment Visualization using nrc**
+![](sentiment_nrc.png)
+
+## **Sentiment Distribution**
+![](sentiment_distribution.png)
+
+
+## **Corona Virus Comment Trend**
+![](Corona_virus_comment_trend.png)
+
+
+## **ML Model Procedures**
+
+We used two models using H2o instances that can predict a comment’s score based on the score of the parent post and the NRC sentiments of the comments:
+- *Gradient Boosting Model*
+- *Linear Regression Model*
+
+After processing data was divided:
+- Train (70%)
+- Test (15%)
+- Validate (15%)
+
+## **Gradient Boosting Model Results**
+
+![](GB_Results.png)
+
+
+## **Linear Regression Model Results**
+
+![](LinearReg_Results.png)
+
+## **Key Take-aways**
