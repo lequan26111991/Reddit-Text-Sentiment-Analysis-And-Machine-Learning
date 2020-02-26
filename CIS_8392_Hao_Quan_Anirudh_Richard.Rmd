@@ -99,6 +99,21 @@ r <- reddit_urls(subreddit = "Coronavirus", page_threshold = 20)
 rc <- reddit_content(r$URL)
 ```
 
+```{r data_summary_1, warning=FALSE, message=FALSE}
+summary.df <- tibble(Columns = integer(), Rows = integer())
+summary.df <- add_row(summary.df, Columns = length(rc), Rows = nrow(rc))
+
+summary.df %>%
+  kable() %>%
+  add_header_above(header = c("Data summary" = length(summary.df)),
+                   bold = TRUE,
+                   font_size = "larger",
+                   align = "left") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+We have downloaded 20 pages of Reddit post's comments, generating more than 10 thousand observations to work with. The data has 18 columns, out of which we will use only 3, comment, comment_score, and post_score.
+
 ```{r extract_data, warning=FALSE, message=FALSE}
 rc_rel <- rc[c("comment", "comment_score", "post_score")]
 rc_rel <- mutate(rc_rel, id = rownames(rc_rel))
@@ -344,7 +359,20 @@ df0 %>%
                    font_size = "larger",
                    align = "left") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
+
+summary.df <- tibble(Columns = integer(), Rows = integer())
+summary.df <- add_row(summary.df, Columns = length(df0), Rows = nrow(df0))
+
+summary.df %>%
+  kable() %>%
+  add_header_above(header = c("Data summary" = length(summary.df)),
+                   bold = TRUE,
+                   font_size = "larger",
+                   align = "left") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+After combining the id, post_score, and comment_score with the NRC sentiment counts we got 13 columns and the original amount of rows to work with.
 
 Preparing the data for machine learning.
 
