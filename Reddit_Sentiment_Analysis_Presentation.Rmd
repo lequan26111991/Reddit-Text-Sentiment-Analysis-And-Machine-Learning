@@ -28,23 +28,39 @@ Attributes used:
 - To handle grammatical nuances, misspellings, and ambiguity during analysis
 
 ## **Word Cloud Visualization**
-![](wordcloud.PNG)
 
+```{r, out.width = "750px", echo=FALSE}
+knitr::include_graphics("wordcloud.PNG")
+```
 
 ## **Sentiment Visualization using bing**
-![](sentiment_bing.PNG){width=75%}
+
+```{r, out.width = "750px", echo=FALSE}
+knitr::include_graphics("sentiment_bing.PNG")
+```
 
 ## **Sentiment Visualization using nrc**
-![](sentiment_nrc.PNG){width=75%}
+```{r, out.width = "750px", echo=FALSE}
+knitr::include_graphics("sentiment_nrc.PNG")
+```
 
 ## **Sentiment Distribution**
-![](sentiment_distribution.PNG){width=75%}
+
+```{r, out.width = "750px", echo=FALSE}
+knitr::include_graphics("sentiment_distribution.PNG")
+```
 
 ## **Corona Virus Comment Trend**
-![](Corona_virus_comment_trend.PNG){width=75%}
+
+```{r, out.width = "750px", echo=FALSE}
+knitr::include_graphics("Corona_virus_comment_trend.PNG")
+```
 
 ## **Sentiment output to ML**
-![](Sentiment_Output.PNG){width=100%}
+
+```{r, out.width = "1000px", echo=FALSE}
+knitr::include_graphics("Sentiment_Output.PNG")
+```
 
 ## **ML Model Procedures**
 
@@ -61,12 +77,16 @@ After processing data was divided:
 
 ## **Gradient Boosting Model Results**
 
-![](GB_Results.PNG)
+```{r, out.width = "1000px", echo=FALSE}
+knitr::include_graphics("GB_Results.PNG")
+```
 
 
 ## **Linear Regression Model Results**
 
-![](LinearReg_Results.PNG)
+```{r, out.width = "1000px", echo=FALSE}
+knitr::include_graphics("LinearReg_Results.PNG")
+```
 
 ## **Key Take-aways**
 
